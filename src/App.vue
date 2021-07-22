@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="container">
     <Todo />
-    <TodoList />
+    <TodoList :onArray='onArray'/>
   </div>
 </template>
 <script>
@@ -9,9 +9,18 @@ import TodoList from './components/TodoList.vue'
 import Todo from './components/Todo.vue'
 export default {
   name: 'app',
+  data () {
+    return {
+    }
+  },
   components: {
     TodoList,
     Todo
+  },
+  methods: {
+    onArray (data) {
+      console.log(data)
+    }
   }
 }
 </script>

@@ -1,7 +1,6 @@
 <template>
 <div class="todos">
-  <div v-for="(todo, index) in todos" :key="todo.id" class="todo-item" :class="{quickly: todo.active, ready: todo.completed}">
-    <TodoItem :todoItem="todo"></TodoItem>
+  <div v-for="(todo, index) in todos" :key="todo.id" class="todo-item" :class="{quickly: todo.active, ready: todo.completed}" :todoItem="todo">
     <div class="todo-made">
       <input type="checkbox" v-model="todo.completed">
       <h2 class="title">
@@ -9,7 +8,7 @@
       </h2>
       <span> {{todo.date}} </span>
     </div>
-    <button class="remove-item" @click="removeTodo(index)"></button>
+    <button class="remove-item" @click="removeTodo(index); getArray(todo);"></button>
     </div>
   <div class="add-todo">
   <input ref="input" type="text" class="todo-inut" v-model="newTodo" @keyup.enter="addTodo" placeholder="Введите дело">
@@ -17,18 +16,19 @@
   <input id="checkbox" type="checkbox" v-model="check">
   Срочное
   </label>
-  <button class="button-todo" @click="addTodo">Добавить дело</button>
+  <button class="button-todo" @click="addTodo(); getArray(todo);">Добавить дело</button>
   </div>
   </div>
 </template>
 <script>
 export default {
-  props: 'TodoItem',
+  props: ['onArray'],
   data () {
     return {
       newTodo: '',
       check: false,
       idForTodo: 2,
+      todoItem: '',
       checkedCategories: false,
       todos: [
         {
@@ -68,6 +68,11 @@ export default {
       if (confirm(`Удалить дело "${this.todos[index].title}"?`)) {
         this.todos.splice(index, 1)
       }
+    },
+    getArray (todo) {
+      this.onArray([
+        todo
+      ])
     }
   }
 }
