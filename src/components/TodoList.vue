@@ -1,17 +1,16 @@
-/* eslint-disable no-unused-expressions */
 <template>
 <div class="todos">
-  <div>
-  <h1 class="heading">Список дел</h1>
-  <ul class="todo-list">
-    <li v-for="(todo, index) in todos" :key="todo.id" class="todo-item" :class="{quickly: todo.active}" >
-    <h2>
+  <div v-for="(todo, index) in todos" :key="todo.id" class="todo-item" :class="{quickly: todo.active, ready: todo.completed}">
+    <TodoItem :todoItem="todo"></TodoItem>
+    <div class="todo-made">
+      <input type="checkbox" v-model="todo.completed">
+      <h2 class="title">
         {{ todo.title }}
-    </h2>
+      </h2>
+      <span> {{todo.date}} </span>
+    </div>
     <button class="remove-item" @click="removeTodo(index)"></button>
-    </li>
-  </ul>
-  </div>
+    </div>
   <div class="add-todo">
   <input ref="input" type="text" class="todo-inut" v-model="newTodo" @keyup.enter="addTodo" placeholder="Введите дело">
   <label class="label-check" for="checkbox">
@@ -24,19 +23,21 @@
 </template>
 <script>
 export default {
+  props: 'TodoItem',
   data () {
     return {
       newTodo: '',
       check: false,
-      idForTodo: 3,
+      idForTodo: 2,
+      checkedCategories: false,
       todos: [
         {
-          id: 1,
+          id: 0,
           title: 'Finish Vue',
           completed: false
         },
         {
-          id: 2,
+          id: 1,
           title: 'Take',
           completed: false
         }
@@ -53,17 +54,20 @@ export default {
         id: this.idForTodo,
         title: this.newTodo,
         completed: false,
-        active: this.check
+        active: this.check,
+        date: new Date().toLocaleString()
       })
 
       this.newTodo = ''
       this.idForTodo++
       this.check = false
 
-      alert(`${this.$refs.input.value} добавлено`)
+      alert(`"${this.$refs.input.value}" добавлено`)
     },
     removeTodo (index) {
-      this.todos.splice(index, 1)
+      if (confirm(`Удалить дело "${this.todos[index].title}"?`)) {
+        this.todos.splice(index, 1)
+      }
     }
   }
 }
@@ -93,9 +97,8 @@ export default {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 12px;
-  padding-left: 30px;
-  padding-right: 15px;
-  border: 1px solid #333;
+  padding: 20px 15px;
+  border: 2px solid rgba(0, 73, 134);
 }
 .remove-item {
   width: 16px;
@@ -111,7 +114,7 @@ export default {
   display: flex;
   align-items: center;
   padding-top: 30px;
-  border-top: 1px solid #333;
+  border-top: 2px solid rgba(0, 73, 134);
 }
 .todo-inut {
   margin-right: 20px;
@@ -129,9 +132,32 @@ export default {
   cursor: pointer;
 }
 .label-check {
-  margin-right: 15px;
+  margin-right: 20px;
 }
 .quickly {
-  border: 3px solid rgb(165, 0, 52);
+  border: 2px solid rgb(165, 0, 52);
+}
+.todo-made {
+  display: flex;
+  align-items: center;
+}
+.ready {
+    text-decoration: line-through;
+    border: 2px solid green;
+}
+.title {
+  margin: 0;
+  margin-right: 30px;
+  padding: 0;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 22px;
+  color: rgba(103, 135, 183);
+}
+span {
+  display: block;
+  font-size: 14px;
+  font-weight: 400;
+  color: rgba(0, 73, 134);
 }
 </style>
