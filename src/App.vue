@@ -1,26 +1,15 @@
 <template>
-  <div id="app" class="container">
-    <Todo />
-    <TodoList :onArray='onArray'/>
+  <div id="app">
+    <Header />
+    <router-view/>
   </div>
 </template>
 <script>
-import TodoList from './components/TodoList.vue'
-import Todo from './components/Todo.vue'
+import Header from './components/Header.vue'
 export default {
   name: 'app',
-  data () {
-    return {
-    }
-  },
   components: {
-    TodoList,
-    Todo
-  },
-  methods: {
-    onArray (data) {
-      console.log(data)
-    }
+    Header
   }
 }
 </script>

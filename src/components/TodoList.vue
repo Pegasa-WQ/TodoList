@@ -1,14 +1,7 @@
 <template>
 <div class="todos">
-  <div v-for="(todo, index) in todos" :key="todo.id" class="todo-item" :class="{quickly: todo.active, ready: todo.completed}" :todoItem="todo">
-    <div class="todo-made">
-      <input type="checkbox" v-model="todo.completed">
-      <h2 class="title">
-        {{ todo.title }}
-      </h2>
-      <span> {{todo.date}} </span>
-    </div>
-    <button class="remove-item" @click="removeTodo(index); getArray(todo);"></button>
+  <div v-for="(todo, index) in todos" :key="todo.id" class="todo" :class="{quickly: todo.active, ready: todo.completed}">
+    <TodoItem v-bind:todo="todo" v-on:remove-todo='removeTodo(index)'/>
     </div>
   <div class="add-todo">
   <input ref="input" type="text" class="todo-inut" v-model="newTodo" @keyup.enter="addTodo" placeholder="Введите дело">
@@ -16,32 +9,25 @@
   <input id="checkbox" type="checkbox" v-model="check">
   Срочное
   </label>
-  <button class="button-todo" @click="addTodo(); getArray(todo);">Добавить дело</button>
+  <button class="button-todo" @click="addTodo()">Добавить дело</button>
   </div>
   </div>
 </template>
 <script>
+import TodoItem from './TodoItem.vue'
 export default {
-  props: ['onArray'],
+  name: 'Todolist',
+  components: {
+    TodoItem
+  },
+  props: ['todos'],
   data () {
     return {
       newTodo: '',
       check: false,
       idForTodo: 2,
       todoItem: '',
-      checkedCategories: false,
-      todos: [
-        {
-          id: 0,
-          title: 'Finish Vue',
-          completed: false
-        },
-        {
-          id: 1,
-          title: 'Take',
-          completed: false
-        }
-      ]
+      checkedCategories: false
     }
   },
   methods: {
@@ -68,16 +54,11 @@ export default {
       if (confirm(`Удалить дело "${this.todos[index].title}"?`)) {
         this.todos.splice(index, 1)
       }
-    },
-    getArray (todo) {
-      this.onArray([
-        todo
-      ])
     }
   }
 }
 </script>
-<style scoped>
+<style>
 .todos {
   display: flex;
   flex-direction: column;
@@ -97,7 +78,7 @@ export default {
   padding: 0;
   height: 500px;
 }
-.todo-item {
+.todo{
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -142,10 +123,6 @@ export default {
 .quickly {
   border: 2px solid rgb(165, 0, 52);
 }
-.todo-made {
-  display: flex;
-  align-items: center;
-}
 .ready {
     text-decoration: line-through;
     border: 2px solid green;
@@ -164,5 +141,9 @@ span {
   font-size: 14px;
   font-weight: 400;
   color: rgba(0, 73, 134);
+}
+.todo-item {
+  display: flex;
+  align-items: center;
 }
 </style>
