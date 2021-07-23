@@ -17,11 +17,14 @@ export default {
   },
   data () {
     return {
-      todos: []
+      todos: undefined
     }
   },
   methods: {
     sendArray (todos) {
+      if (todos === undefined) {
+        return
+      }
       this.todos = todos
     }
   }

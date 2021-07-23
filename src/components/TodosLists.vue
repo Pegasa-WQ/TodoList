@@ -19,24 +19,6 @@ export default {
         title: 'Список дел на сентябрь',
         id: 0,
         todos: [
-          {
-            title: 'Дело всей жизни',
-            id: 0,
-            completed: false,
-            active: true
-          }
-        ]
-      },
-      {
-        title: 'Список дел на сентябрь',
-        id: 1,
-        todos: [
-          {
-            title: 'Дело всей жизни2',
-            id: 1,
-            completed: false,
-            active: true
-          }
         ]
       }]
     }

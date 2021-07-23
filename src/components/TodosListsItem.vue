@@ -1,6 +1,6 @@
 <template>
   <div class="todo-item">
-      <h2 class="title" @click="$emit('send', item.todos)">
+      <h2 class="title">
       {{ item.title }}
     </h2>
   </div>
@@ -14,6 +14,10 @@ export default {
 
     }
   },
-  methods: {}
+  methods: {
+  },
+  created: function () {
+    this.$emit('send', this.item.todos)
+  }
 }
 </script>

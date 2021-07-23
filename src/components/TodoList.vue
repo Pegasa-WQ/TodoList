@@ -36,10 +36,6 @@ export default {
         return
       }
 
-      if (this.todos.length === 0) {
-        return
-      }
-
       this.todos.push({
         id: this.idForTodo,
         title: this.newTodo,
