@@ -18,8 +18,22 @@ export default {
       dela: [{
         title: 'Список дел на сентябрь',
         id: 0,
-        todos: [
-        ]
+        todos: [{
+          id: 0,
+          title: 'Новое дело',
+          completed: false,
+          active: true
+        }]
+      },
+      {
+        title: 'Список дел на октябрь',
+        id: 1,
+        todos: [{
+          id: 1,
+          title: 'Старое дело',
+          completed: false,
+          active: true
+        }]
       }]
     }
   },
