@@ -1,7 +1,7 @@
 <template>
-  <div id="app">
-  <TodosLists v-on:send="sendArray" />
-  <TodoList v-bind:todos="todos"  v-on:remove-todo='removeTodo (index)' />
+  <div class="container" id="app">
+  <TodosLists v-on:send="sendArray"/>
+  <TodoList v-bind:todos="todos" v-bind:title="title"  v-on:remove-todo='removeTodo (index)' />
   </div>
 </template>
 
@@ -17,16 +17,31 @@ export default {
   },
   data () {
     return {
-      todos: undefined
+      todos: undefined,
+      title: ''
     }
   },
   methods: {
-    sendArray (todos) {
+    sendArray (todos, title) {
       if (todos === undefined) {
         return
       }
       this.todos = todos
+      this.title = title
+    },
+    getTitle (title) {
+      console.log(title)
     }
   }
 }
 </script>
+<style>
+  .container {
+    display: flex;
+    align-items: stretch;
+    margin: 0 auto;
+    max-width: 1000px;
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+</style>

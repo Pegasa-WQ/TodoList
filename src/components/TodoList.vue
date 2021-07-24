@@ -1,10 +1,13 @@
 <template>
 <div class="todos">
-  <div v-for="(todo, index) in todos" :key="todo.id" class="todo" :class="{quickly: todo.active, ready: todo.completed}">
-    <TodoItem v-bind:todo="todo" v-on:remove-todo='removeTodo(index)'/>
+<div class="todos_container">
+<h2 class="title-list"> {{ title }} </h2>
+  <div v-for="(todo, index) in todos" :key="todo.id">
+    <TodoItem v-bind:todo="todo" v-on:remove-todo='removeTodo(index)' :class="{quickly: todo.active, ready: todo.completed}"/>
     </div>
-  <div class="add-todo">
-  <input ref="input" type="text" class="todo-inut" v-model="newTodo" @keyup.enter="addTodo" placeholder="Введите дело">
+</div>
+  <div class="add">
+  <input ref="input" type="text" class="todo-input" v-model="newTodo" @keyup.enter="addTodo" placeholder="Введите дело">
   <label class="label-check" for="checkbox">
   <input id="checkbox" type="checkbox" v-model="check">
   Срочное
@@ -20,7 +23,7 @@ export default {
   components: {
     TodoItem
   },
-  props: ['todos'],
+  props: ['todos', 'title'],
   data () {
     return {
       newTodo: '',
@@ -63,8 +66,14 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding-top: 50px;
-  padding-bottom: 50px;
+  padding-bottom: 25px;
+  height: 600px;
+  width: 480px;
+}
+.todos_container {
+  padding: 0 10px;
+  max-height: 450px;
+  overflow: auto;
 }
 .heading {
   margin: 0;
@@ -72,19 +81,6 @@ export default {
   padding: 0;
   text-align: center;
   font-size: 30px;
-}
-.todo-list {
-  margin: 0;
-  padding: 0;
-  height: 500px;
-}
-.todo{
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-  padding: 20px 15px;
-  border: 2px solid rgba(0, 73, 134);
 }
 .remove-item {
   width: 16px;
@@ -96,17 +92,17 @@ export default {
   background-color: transparent;
   cursor: pointer;
 }
-.add-todo {
+.add {
   display: flex;
   align-items: center;
   padding-top: 30px;
   border-top: 2px solid rgba(0, 73, 134);
 }
-.todo-inut {
-  margin-right: 20px;
+.todo-input {
+  margin-right: 10px;
   padding-left: 5px;
   padding-right: 5px;
-  width: 350px;
+  width: 200px;
   height: 30px;
 }
 .button-todo {
@@ -129,10 +125,9 @@ export default {
 }
 .title {
   margin: 0;
-  margin-right: 30px;
   padding: 0;
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 400;
   line-height: 22px;
   color: rgba(103, 135, 183);
 }
@@ -145,5 +140,14 @@ span {
 .todo-item {
   display: flex;
   align-items: center;
+}
+.title-list {
+  margin: 0;
+  margin-bottom: 20px;
+    padding: 0;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 22px;
+    color: rgba(92, 136, 218);
 }
 </style>
