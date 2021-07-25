@@ -1,6 +1,6 @@
 <template>
-  <div class="todo-item" @click="$emit('send', item.todos, item.title); $emit('getId')">
-      <h2 class="title-lists">
+  <div class="todo-item">
+      <h2 class="title-lists" @click="$emit('send', item.todos, item.title); $emit('getId')">
       {{ item.title }}
     </h2>
     <button class="remove-item" @click="$emit('remove-todo')"></button>
@@ -26,6 +26,7 @@ export default {
 .title-lists {
   margin: 0;
   padding: 0;
+  min-width: 70%;
   font-size: 20px;
   font-weight: 600;
   line-height: 22px;
@@ -41,6 +42,6 @@ export default {
   cursor: pointer;
 }
 .active {
-  background-color: red;
+  border: 2px solid rgb(165, 0, 52);
 }
 </style>

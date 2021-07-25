@@ -35,10 +35,12 @@ export default {
   },
   methods: {
     addTodo () {
+      if (this.todos === 0) {
+        return
+      }
       if (this.newTodo.trim().length === 0) {
         return
       }
-
       this.todos.push({
         id: this.idForTodo,
         title: this.newTodo,
@@ -83,8 +85,8 @@ export default {
   font-size: 30px;
 }
 .remove-item {
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   border: none;
   background-image: url('../assets/cross.svg');
   background-repeat: no-repeat;
