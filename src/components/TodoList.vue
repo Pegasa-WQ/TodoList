@@ -3,7 +3,7 @@
 <div class="todos_container">
 <h2 class="title-list"> {{ title }} </h2>
   <div v-for="(todo, index) in todos" :key="todo.id">
-    <TodoItem v-bind:todo="todo" v-on:remove-todo='removeTodo(index)' :class="{quickly: todo.active, ready: todo.completed}"/>
+    <TodoItem v-bind:todo="todo" v-on:remove-todo='removeTodo(index)' :class="{urgent: todo.checked, completed: todo.completed}"/>
     </div>
 </div>
   <div class="add">
@@ -28,9 +28,8 @@ export default {
     return {
       newTodo: '',
       check: false,
-      idForTodo: 2,
-      todoItem: '',
-      checkedCategories: false
+      idForTodo: 0,
+      todoItem: ''
     }
   },
   methods: {
@@ -45,7 +44,7 @@ export default {
         id: this.idForTodo,
         title: this.newTodo,
         completed: false,
-        active: this.check,
+        checked: this.check,
         date: new Date().toLocaleString()
       })
 
@@ -118,10 +117,10 @@ export default {
 .label-check {
   margin-right: 20px;
 }
-.quickly {
+.urgent {
   border: 2px solid rgb(165, 0, 52);
 }
-.ready {
+.completed {
     text-decoration: line-through;
     border: 2px solid green;
 }

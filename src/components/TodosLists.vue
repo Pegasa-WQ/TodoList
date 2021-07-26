@@ -2,7 +2,7 @@
 <div class="todos-lists">
   <div class="container-lists">
   <div v-for="(item, index) in dela" :key="index">
-      <TodosListsItem v-bind:item="item" v-on:send="$emit('send', item.todos, item.title)" v-on:getId="getId(index)" v-on:remove-todo='removeList(index)' :class="{active: smth === index, readies: getComp(item)}"/>
+      <TodosListsItem v-bind:item="item" v-on:send="$emit('send', item.todos, item.title)" v-on:getId="getId(index)" v-on:remove-todo='removeList(index)' :class="{active: activeId === index}"/>
   </div>
   </div>
   <div class="add">
@@ -22,17 +22,14 @@ export default {
   data () {
     return {
       newList: '',
-      smth: '',
+      activeId: '',
       dela: [],
-      ready: false,
-      i: '',
-      array: [],
       idForList: 0
     }
   },
   methods: {
     getId (index) {
-      this.smth = index
+      this.activeId = index
     },
     addList () {
       if (this.newList.trim().length === 0) {
@@ -41,37 +38,30 @@ export default {
       this.dela.push({
         id: this.idForList,
         title: this.newList,
-        green: false,
         todos: []
       })
 
       this.idForList++
       this.newList = ''
     },
-    getIndex (index) {
-      if (this.smth < index) {
+    getIdActive (index) {
+      if (this.activeId < index) {
         return
       }
-      if (this.smth >= index) {
-        this.smth -= 1
+      if (this.activeId >= index) {
+        this.activeId -= 1
       }
     },
     removeList (index) {
       if (this.dela.length === 1) {
         this.$emit('remove', 0, '')
         this.dela.splice(index, 1)
-        this.getIndex(index)
+        this.getIdActive(index)
       } else {
-        this.getIndex(index)
+        this.getIdActive(index)
         this.dela.splice(index, 1)
-        this.$emit('remove', this.dela[this.smth].todos, this.dela[this.smth].title)
+        this.$emit('remove', this.dela[this.activeId].todos, this.dela[this.activeId].title)
       }
-    },
-    getComp (item) {
-      item.todos.filter(i => {
-        item.green = i.completed
-      })
-      return item.green
     }
   },
   computed: {
@@ -87,8 +77,5 @@ export default {
   padding-bottom: 25px;
   width: 360px;
   height: 600px;
-}
-.readies {
-  background-color: green;
 }
 </style>
