@@ -17,10 +17,12 @@ export default {
   },
   methods: {
     getComp (item) {
-      return item.todos.filter(i => i.completed).length > 0 && item.todos.filter(i => i.completed).length < item.todos.length
+      item.green = item.todos.filter(i => i.completed).length > 0 && item.todos.filter(i => i.completed).length < item.todos.length
+      return item.green
     },
     findAll (item) {
-      return item.todos.length === item.todos.filter(i => i.completed).length && item.todos.length > 0
+      item.gray = item.todos.length === item.todos.filter(i => i.completed).length && item.todos.length > 0
+      return item.gray
     }
   },
   created: function () {
