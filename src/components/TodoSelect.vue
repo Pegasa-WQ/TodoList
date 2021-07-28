@@ -1,6 +1,6 @@
 <template>
 <div class="v-select">
-<select class="select" @change="onChange($event)">
+<select key="selectedId" class="select" @change="onChange($event)">
 <option class="options" v-for="option in options" :key="option.value"> {{ option.name }}</option>
 </select>
 </div>

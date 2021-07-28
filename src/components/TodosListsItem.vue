@@ -17,7 +17,7 @@ export default {
   },
   methods: {
     getComp (item) {
-      item.green = item.todos.filter(i => i.completed).length > 0 && item.todos.filter(i => i.completed).length < item.todos.length
+      item.green = item.todos.length
       return item.green
     },
     findAll (item) {

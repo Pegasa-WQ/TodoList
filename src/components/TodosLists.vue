@@ -33,7 +33,7 @@ export default {
         { name: 'Исполненные', value: 2 },
         { name: 'Неисполненные', value: 3 }
       ],
-      array: []
+      array: 0
     }
   },
   methods: {
@@ -52,6 +52,8 @@ export default {
 
       this.idForList++
       this.newList = ''
+      this.sortByCategories()
+      document.querySelector('.select').value = 'Все'
     },
     getIdActive (index) {
       if (this.activeId < index) {
@@ -73,15 +75,18 @@ export default {
       }
     },
     sortByCategories (option) {
-      this.array = []
+      this.array = 0
       if (option === 'Исполненные') {
         this.array = this.dela.filter(function (item) {
           return item.gray
         })
+        console.log(this.array)
       }
       if (option === 'Неисполненные') {
         this.array = this.dela.filter(function (item) {
-          return item.green
+          if (item.gray === false) {
+            return item
+          }
         })
       }
       return this.dela
@@ -89,7 +94,7 @@ export default {
   },
   computed: {
     filteredTodos () {
-      if (this.array.length) {
+      if (this.array !== 0) {
         return this.array
       } else {
         return this.dela
