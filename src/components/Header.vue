@@ -12,6 +12,9 @@ export default {
 }
 </script>
 <style>
+.header {
+  padding-top: 25px;
+}
 .heading {
   margin: 0;
   margin-bottom: 30px;

@@ -1,5 +1,5 @@
 <template>
-  <div class="todo-item" :class="{full: findAll(item), ready: getComp(item)}">
+  <div class="list-item" :class="{full: findAll(item), ready: getComp(item)}">
       <h2 class="title-lists" @click="$emit('send', item.todos, item.title); $emit('getId')">
       {{ item.title }}
     </h2>
@@ -34,29 +34,39 @@ export default {
 <style scoped>
 .title-lists {
   margin: 0;
-  padding: 0;
-  min-width: 90%;
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 35px;
-  color: rgba(92, 136, 218);
+  padding: 10px 0;
+  min-width: 93%;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 18px;
+  color: rgba(103, 135, 183);
 }
-.todo-item {
+.list-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin: 0;
   margin-bottom: 12px;
-  padding: 0 5px;
-  border: 2px solid rgba(0, 73, 134);
+  padding: 0 10px;
+  border-radius: 5px;
+  border: 1px solid rgba(103, 135, 183);
+  background-color: #FFF;
   cursor: pointer;
+  transition: all 0.3s ease 0s;
+}
+.list-item:hover {
+  background-color: rgba(103, 135, 183, 0.2);
+}
+.list-item:active {
+  background-color: rgba(103, 135, 183, 0.4);
 }
 .active {
-  border: 2px solid rgb(165, 0, 52);
+  border: 1px solid rgba(0, 73, 134);
 }
 .ready {
-  background-color: green;
+  background-color: rgba(189, 214, 230);
 }
 .full {
-  background-color: gray;
+  background-color: rgba(185, 201, 204);
 }
 </style>

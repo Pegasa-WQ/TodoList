@@ -50,6 +50,7 @@ export default {
         todos: []
       })
 
+      this.sortAbc()
       this.idForList++
       this.newList = ''
       this.sortByCategories()
@@ -90,6 +91,19 @@ export default {
         })
       }
       return this.dela
+    },
+    sortAbc () {
+      this.dela = this.dela.sort(function (a, b) {
+        const nameA = a.title.toLowerCase()
+        const nameB = b.title.toLowerCase()
+        if (nameA < nameB) {
+          return -1
+        }
+        if (nameA > nameB) {
+          return 1
+        }
+        return 0 // Никакой сортировки
+      })
     }
   },
   computed: {
@@ -100,6 +114,9 @@ export default {
         return this.dela
       }
     }
+  },
+  created: function () {
+    this.sortAbc()
   }
 }
 </script>
@@ -110,7 +127,7 @@ export default {
   justify-content: space-between;
   margin-right: 30px;
   padding-bottom: 25px;
-  width: 360px;
-  height: 600px;
+  width: 380px;
+  height: 550px;
 }
 </style>

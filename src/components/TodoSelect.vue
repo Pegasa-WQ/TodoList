@@ -32,7 +32,13 @@ export default {
   display: flex;
   align-items: center;
   margin: 0;
-  padding: 0;
+  margin-bottom: 20px;
+  padding: 5px;
+  width: 100%;
+  color: #fff;
+  background-color: rgba(103, 135, 183, 0.7);
+  cursor: pointer;
+  transition: all 0.3s ease 0s;
 }
 .v-select {
   position: relative;
@@ -43,7 +49,17 @@ export default {
   top: 20px;
   right: 0;
   width: 100%;
-  border: 1px solid gray;
+  border: none;
+  cursor: pointer;
+}
+.select:focus-visible{
+  outline: 1px solid rgb(0, 94, 184);
+}
+.select:hover {
+  background-color: rgba(103, 135, 183, 0.5);
+}
+.select:active {
+  outline: 1px solid rgb(0, 94, 184);
 }
 .all {
   margin-right: 10px;

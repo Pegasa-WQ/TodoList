@@ -25,9 +25,26 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin: 0;
   margin-bottom: 12px;
-  padding: 10px 15px;
-  border: 2px solid rgba(0, 73, 134);
+  padding: 8px 10px;
+  border-radius: 5px;
+  background-color: rgba(103, 135, 183);
+  transition: all 0.3s ease 0s;
+}
+.title {
+  margin: 0;
+  padding: 0;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 18px;
+  color: #fff;
+}
+span {
+  display: block;
+  font-size: 14px;
+  font-weight: 400;
+  color: #fff;
 }
 .todo-item__content {
   display: flex;
@@ -35,7 +52,7 @@ export default {
 }
 .todo-item__date-remove {
   display: flex;
-    align-items: center;
+  align-items: center;
 }
 .time {
   margin-right: 10px;
@@ -43,5 +60,22 @@ export default {
 .check {
   margin: 0;
   margin-right: 10px;
+}
+.remove-item {
+  width: 20px;
+  height: 20px;
+  border: none;
+  background-image: url('../assets/cross.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: transparent;
+  cursor: pointer;
+}
+.urgent {
+ background-color: rgba(118, 35, 47, 0.9);
+}
+.completed {
+  text-decoration: line-through;
+  background-color: rgba(86, 176, 147, 1);
 }
 </style>
