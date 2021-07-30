@@ -4,6 +4,10 @@ import './registerServiceWorker'
 import router from './router'
 import store from './store'
 
+import ApiPlugin from './plugins/api'
+
+Vue.use(ApiPlugin)
+
 Vue.config.productionTip = false
 
 new Vue({

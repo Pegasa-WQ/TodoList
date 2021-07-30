@@ -2,7 +2,6 @@
 <div class="todos">
 <addTodoModal v-if="PopupVisibleAdd" v-on:closePopupAdd="closePopupAdd" v-bind:titleTodo="newTodo" v-bind:title="title"/>
 <div class="todos_container">
-<login />
 <h2 class="title-list"> {{ title }} </h2>
 <div v-for="(todo, index) in todos" :key="todo.id">
     <deleteTodoModal v-if="PopupVisible" v-on:closePopup="closePopup" v-on:deleteTodo="removeTodo(index)" v-bind:todo="todo"/>
@@ -23,14 +22,12 @@
 import TodoItem from './TodoItem.vue'
 import deleteTodoModal from './deleteTodoModal.vue'
 import addTodoModal from './addTodoModal.vue'
-import login from './login.vue'
 export default {
   name: 'Todolist',
   components: {
     TodoItem,
     deleteTodoModal,
-    addTodoModal,
-    login
+    addTodoModal
   },
   props: ['todos', 'title'],
   data () {
