@@ -33,9 +33,13 @@
 <button class="button-todo" @click="signUp">Зарегистрироваться</button>
 <button class="button-todo" @click="openLogin">Войти</button>
 </form></div>
+<div>
+  {{ info }}
+</div>
 </div>
 </template>
 <script>
+import axios from 'axios'
 export default {
   name: 'login',
   props: [],
@@ -46,7 +50,8 @@ export default {
       visible: 1,
       email: '',
       password: '',
-      errors: []
+      errors: [],
+      info: null
     }
   },
   methods: {
@@ -61,14 +66,26 @@ export default {
       this.visible--
     },
     async signIn () {
-      console.log(await this.$api.auth.signIn({
-        email: this.email,
-        password: this.password
-      }))
+      try {
+        const data = (await this.$api.auth.signIn({
+          email: this.email,
+          password: this.password
+        })).data
+        localStorage.setItem('user', JSON.stringify(data))
+        this.$store.dispatch('user/setUser', data)
+      } catch (error) {
+        this.errors.push(error)
+        console.log(this.errors)
+      }
     },
     signUp () {
       console.log('авторизация')
     }
+  },
+  mounted () {
+    axios
+      .get('https://academy2.smw.tom.ru/kerov-evgeny/api2/user')
+      .then(response => (this.info = response))
   }
 }
 </script>
