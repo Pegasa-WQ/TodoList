@@ -15,6 +15,7 @@
 <script>
 import TodosListsItem from './TodosListsItem.vue'
 import TodoSelect from './TodoSelect.vue'
+import axios from 'axios'
 export default {
   name: 'TodosLists',
   components: {
@@ -104,6 +105,12 @@ export default {
         }
         return 0 // Никакой сортировки
       })
+    },
+    async getJson () {
+      axios.get('https://academy2.smw.tom.ru/kerov-evgeny/api2/list', { headers: { Authorization: 'Bearer' + this.$cookie.get('accessToken') } })
+        .then((result) => {
+          console.log(result)
+        })
     }
   },
   computed: {
@@ -117,6 +124,7 @@ export default {
   },
   created: function () {
     this.sortAbc()
+    this.getJson()
   }
 }
 </script>

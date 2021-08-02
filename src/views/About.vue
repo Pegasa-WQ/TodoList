@@ -4,57 +4,68 @@
 <form @submit.prevent="signIn" class="form">
 <div class="form-group">
 <label class="label" for="email">Ваш E-mail</label>
-<input class="input" type="text" id="email" v-model="email">
+<input class="input" type="text" id="email" v-model="formLog.email">
 </div>
 <div class="form-group">
 <label class="label" for="password">Пароль</label>
-<input class="input" type="password" id="password" v-model="password">
+<input class="input" type="password" id="password" v-model="formLog.password">
 </div>
 <div>
-<button class="button-todo">Войти</button>
+<button type="submit" class="button-todo">Войти</button>
 <button class="button-register button-todo" @click="visiblReregister">Зарегистрироваться</button>
 </div>
 </form>
 </div>
 <div v-else-if="visible === 2" class="register">
-<form>
+<form @submit.prevent="signUp">
 <div class="form-group">
 <label class="label" for="name">Ваше имя</label>
-<input class="input" type="text" id="name">
+<input v-model="formReg.name" class="input" type="text" id="name">
 </div>
 <div class="form-group">
 <label class="label" for="email">Ваш E-mail</label>
-<input class="input" type="text" id="email">
+<input v-model="formReg.email" class="input" type="text" id="email">
 </div>
 <div class="form-group">
 <label class="label" for="password">Пароль</label>
-<input class="input" type="password" id="password">
+<input v-model="formReg.password" class="input" type="password" id="password">
 </div>
-<button class="button-todo" @click="signUp">Зарегистрироваться</button>
+<button class="button-todo" type="submit">Зарегистрироваться</button>
 <button class="button-todo" @click="openLogin">Войти</button>
 </form></div>
 <div>
-  {{ info }}
+  <!-- {{ info }} -->
 </div>
 </div>
 </template>
 <script>
+import { mapActions } from 'vuex'
 import axios from 'axios'
+
 export default {
   name: 'login',
-  props: [],
   data () {
     return {
       mode: 'signIn',
       visibleLogin: true,
       visible: 1,
-      email: '',
-      password: '',
+      formLog: {
+        email: '',
+        password: ''
+      },
+      formReg: {
+        email: '',
+        password: '',
+        name: ''
+      },
       errors: [],
-      info: null
+      id: ''
     }
   },
   methods: {
+    ...mapActions('auth', [
+      'USER_LOGIN'
+    ]),
     getVisible () {
       this.visibleLogin = false
       this.visible++
@@ -65,21 +76,37 @@ export default {
     openLogin () {
       this.visible--
     },
-    async signIn () {
-      try {
-        const data = (await this.$api.auth.signIn({
-          email: this.email,
-          password: this.password
-        })).data
-        localStorage.setItem('user', JSON.stringify(data))
-        this.$store.dispatch('user/setUser', data)
-      } catch (error) {
-        this.errors.push(error)
-        console.log(this.errors)
-      }
+    getRoud () {
+      this.$router.push({ name: 'Home' })
     },
-    signUp () {
-      console.log('авторизация')
+    async signIn () {
+      await axios.post('https://academy2.smw.tom.ru/artem-bereza/api2/user/login', { email: this.formLog.email, password: this.formLog.password })
+        .then((result) => {
+          this.$cookie.set('accessToken', result.data.data.access_token)
+          this.id = result.data.data.id
+          console.log(result)
+        })
+        .catch(function (error) {
+          console.log(error.response)
+        })
+      // this.USER_LOGIN({
+      //   email: this.email,
+      //   password: this.password
+      // })
+      setTimeout(() => this.getRoud(), 1000)
+    },
+    async signUp () {
+      axios.post('https://academy2.smw.tom.ru/artem-bereza/api2/user/register', { name: this.formReg.name, email: this.formReg.email, password: this.formReg.password })
+        .then((result) => {
+          this.$cookie.set('accessToken', result.data.data.access_token)
+          console.log(result)
+        })
+        .catch(function (error) {
+          this.dispatch(error)
+          console.log(error)
+        })
+
+      setTimeout(() => this.getRoud(), 1000)
     }
   },
   mounted () {

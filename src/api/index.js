@@ -1,7 +1,7 @@
-import instance from './instance'
+// import instance from './instance'
 
-import About from './auth'
+// import About from './auth'
 
-export default {
-  auth: About(instance)
-}
+// export default {
+//   auth: About(instance)
+// }
