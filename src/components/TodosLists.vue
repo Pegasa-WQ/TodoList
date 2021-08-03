@@ -2,8 +2,8 @@
 <div class="todos-lists">
   <div class="container-lists">
   <TodoSelect v-bind:options="options" @select="sortByCategories"/>
-  <div v-for="(item, index) in filteredTodos" :key="index">
-      <TodosListsItem v-bind:item="item" v-on:send="$emit('send', item.todos, item.title)" v-on:getId="getId(index)" v-on:remove-todo='removeList(index)' :class="{active: activeId === index}"/>
+  <div v-for="(item, index) in dela" :key="index">
+      <TodosListsItem v-bind:item="item" v-on:send="$emit('send', item.task, item.name)" v-on:getId="getId(index)" v-on:remove-todo='removeList(index, item)' :class="{active: activeId === index}"/>
   </div>
   </div>
   <div class="add">
@@ -47,8 +47,8 @@ export default {
       }
       this.dela.push({
         id: this.idForList,
-        title: this.newList,
-        todos: []
+        name: this.newList,
+        task: []
       })
 
       this.sortAbc()
@@ -65,16 +65,21 @@ export default {
         this.activeId -= 1
       }
     },
-    removeList (index) {
+    removeList (index, item) {
       if (this.dela.length === 1) {
         this.$emit('remove', 0, '')
         this.dela.splice(index, 1)
         this.getIdActive(index)
       } else {
         this.getIdActive(index)
-        this.dela.splice(index, 1)
-        this.$emit('remove', this.dela[this.activeId].todos, this.dela[this.activeId].title)
+        this.dela.splice(item.id, 1)
+        this.$emit('remove', this.dela[this.activeId].task, this.dela[this.activeId].name)
       }
+      axios.delete(`https://academy2.smw.tom.ru/artem-bereza/api2/list/delete/${item.id}`, { headers: { Authorization: 'Bearer' + this.$cookie.get('accessToken') } })
+        .then((result) => {
+          console.log(result)
+        })
+      this.getJson()
     },
     sortByCategories (option) {
       this.array = 0
@@ -95,8 +100,8 @@ export default {
     },
     sortAbc () {
       this.dela = this.dela.sort(function (a, b) {
-        const nameA = a.title.toLowerCase()
-        const nameB = b.title.toLowerCase()
+        const nameA = a.name.toLowerCase()
+        const nameB = b.name.toLowerCase()
         if (nameA < nameB) {
           return -1
         }
@@ -107,9 +112,11 @@ export default {
       })
     },
     async getJson () {
-      axios.get('https://academy2.smw.tom.ru/kerov-evgeny/api2/list', { headers: { Authorization: 'Bearer' + this.$cookie.get('accessToken') } })
+      const lt = this
+      axios.get('https://academy2.smw.tom.ru/artem-bereza/api2/user/get-lists', { headers: { Authorization: 'Bearer' + this.$cookie.get('accessToken') } })
         .then((result) => {
-          console.log(result)
+          console.log(result.data.data)
+          lt.dela = result.data.data
         })
     }
   },
@@ -123,8 +130,8 @@ export default {
     }
   },
   created: function () {
-    this.sortAbc()
     this.getJson()
+    this.sortAbc()
   }
 }
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div class="list-item" :class="{full: findAll(item), ready: getComp(item)}">
-      <h2 class="title-lists" @click="$emit('send', item.todos, item.title); $emit('getId')">
-      {{ item.title }}
+      <h2 class="title-lists" @click="$emit('send', item.task, item.title); $emit('getId')">
+      {{ item.name }}
     </h2>
     <button class="remove-item" @click="$emit('remove-todo')"></button>
   </div>
@@ -17,16 +17,16 @@ export default {
   },
   methods: {
     getComp (item) {
-      item.green = item.todos.length
+      item.green = item.task.length
       return item.green
     },
     findAll (item) {
-      item.gray = item.todos.length === item.todos.filter(i => i.completed).length && item.todos.length > 0
+      item.gray = item.task.length === item.task.filter(i => i.completed).length && item.task.length > 0
       return item.gray
     }
   },
   created: function () {
-    this.$emit('send', this.item.todos, this.item.title)
+    this.$emit('send', this.item.task, this.item.title)
     this.$emit('getId')
   }
 }

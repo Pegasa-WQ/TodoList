@@ -3,7 +3,7 @@
   <div class="todo-item__content">
       <input class="check" type="checkbox" v-model="todo.completed" />
     <h2 class="title">
-      {{ todo.title }}
+      {{ todo.name }}
     </h2>
   </div>
   <div class="todo-item__date-remove">

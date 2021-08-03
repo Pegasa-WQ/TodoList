@@ -8,7 +8,7 @@ import VueCookies from 'vue-cookies'
 Vue.use(VueRouter)
 const routes = [
   {
-    path: '/',
+    path: '',
     name: 'About',
     component: About
   },
@@ -21,7 +21,7 @@ const routes = [
       if (VueCookies.get('accessToken')) {
         next()
       } else {
-        next({ name: 'About' })
+        next(false)
       }
     }
   }

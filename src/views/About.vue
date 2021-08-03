@@ -5,10 +5,12 @@
 <div class="form-group">
 <label class="label" for="email">Ваш E-mail</label>
 <input class="input" type="text" id="email" v-model="formLog.email">
+<span class="v-text"> {{ errorEmail }} </span>
 </div>
 <div class="form-group">
 <label class="label" for="password">Пароль</label>
 <input class="input" type="password" id="password" v-model="formLog.password">
+<span class="v-text"> {{ errorPassword }} </span>
 </div>
 <div>
 <button type="submit" class="button-todo">Войти</button>
@@ -21,21 +23,21 @@
 <div class="form-group">
 <label class="label" for="name">Ваше имя</label>
 <input v-model="formReg.name" class="input" type="text" id="name">
+<span class="v-text"> {{ errorRegName }} </span>
 </div>
 <div class="form-group">
 <label class="label" for="email">Ваш E-mail</label>
 <input v-model="formReg.email" class="input" type="text" id="email">
+<span class="v-text"> {{ errorRegEmail }} </span>
 </div>
 <div class="form-group">
 <label class="label" for="password">Пароль</label>
 <input v-model="formReg.password" class="input" type="password" id="password">
+<span class="v-text"> {{ errorRegPassword }} </span>
 </div>
 <button class="button-todo" type="submit">Зарегистрироваться</button>
 <button class="button-todo" @click="openLogin">Войти</button>
 </form></div>
-<div>
-  <!-- {{ info }} -->
-</div>
 </div>
 </template>
 <script>
@@ -49,6 +51,11 @@ export default {
       mode: 'signIn',
       visibleLogin: true,
       visible: 1,
+      errorEmail: '',
+      errorPassword: '',
+      errorRegName: '',
+      errorRegEmail: '',
+      errorRegPassword: '',
       formLog: {
         email: '',
         password: ''
@@ -57,9 +64,7 @@ export default {
         email: '',
         password: '',
         name: ''
-      },
-      errors: [],
-      id: ''
+      }
     }
   },
   methods: {
@@ -80,14 +85,16 @@ export default {
       this.$router.push({ name: 'Home' })
     },
     async signIn () {
+      const it = this
       await axios.post('https://academy2.smw.tom.ru/artem-bereza/api2/user/login', { email: this.formLog.email, password: this.formLog.password })
         .then((result) => {
           this.$cookie.set('accessToken', result.data.data.access_token)
-          this.id = result.data.data.id
-          console.log(result)
         })
         .catch(function (error) {
-          console.log(error.response)
+          if (error.response.data.email[0]) {
+            it.errorEmail = error.response.data.email[0]
+            it.errorPassword = error.response.data.password[0]
+          }
         })
       // this.USER_LOGIN({
       //   email: this.email,
@@ -96,29 +103,32 @@ export default {
       setTimeout(() => this.getRoud(), 1000)
     },
     async signUp () {
+      const it = this
       axios.post('https://academy2.smw.tom.ru/artem-bereza/api2/user/register', { name: this.formReg.name, email: this.formReg.email, password: this.formReg.password })
         .then((result) => {
-          this.$cookie.set('accessToken', result.data.data.access_token)
+          // this.$cookie.set('accessToken', result.data.data.access_token)
           console.log(result)
         })
         .catch(function (error) {
-          this.dispatch(error)
-          console.log(error)
+          console.log(error.response.data)
+          if (error.response.data.email[0]) {
+            it.errorRegEmail = error.response.data.email[0]
+            it.errorRegPassword = error.response.data.password[0]
+            it.errorRegName = error.response.data.name[0]
+          }
         })
 
       setTimeout(() => this.getRoud(), 1000)
     }
   },
   mounted () {
-    axios
-      .get('https://academy2.smw.tom.ru/kerov-evgeny/api2/user')
-      .then(response => (this.info = response))
   }
 }
 </script>
 <style>
 .input {
   margin-right: 10px;
+  margin-bottom: 5px;
   padding-left: 5px;
   padding-right: 5px;
   height: 30px;
