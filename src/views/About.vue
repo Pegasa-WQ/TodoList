@@ -109,6 +109,7 @@ export default {
       axios.post('https://academy2.smw.tom.ru/artem-bereza/api2/user/register', { name: this.formReg.name, email: this.formReg.email, password: this.formReg.password })
         .then((result) => {
           this.$cookie.set('accessToken', result.data.data.access_token)
+          this.$cookie.set('refreshToken', result.data.data.refresh_token)
           console.log(result)
         })
         .catch(function (error) {

@@ -46,18 +46,15 @@ export default {
       this.activeId = index
     },
     addList () {
+      this.createInterceptor()
       if (this.newList.trim().length === 0) {
         return
       }
-      this.createInterceptor()
       const it = this
-      axios.post('https://academy2.smw.tom.ru/artem-bereza/api2/list/create', { attributes2: { name: this.newList } }, { headers: { Authorization: 'Bearer' + this.$cookie.get('accessToken') } })
+      axios.post('https://academy2.smw.tom.ru/artem-bereza/api2/list/create', { attributes: { name: this.newList } }, { headers: { Authorization: 'Bearer' + this.$cookie.get('accessToken') } })
         .then((result) => {
           it.idList = result.data.data.attributes.id
           console.log(it.idList)
-        })
-        .catch(function (error) {
-          console.log(error)
         })
       this.dela.push({
         id: it.idList,
@@ -79,6 +76,7 @@ export default {
       }
     },
     removeList (index, item) {
+      this.createInterceptor()
       axios.delete(`https://academy2.smw.tom.ru/artem-bereza/api2/list/delete/${item.id}`, { headers: { Authorization: 'Bearer' + this.$cookie.get('accessToken') } })
         .then((result) => {
           console.log(result)
@@ -126,30 +124,20 @@ export default {
       const lt = this
       await axios.get('https://academy2.smw.tom.ru/artem-bereza/api2/user/get-lists', { headers: { Authorization: 'Bearer' + this.$cookie.get('accessToken') } })
         .then((result) => {
+          console.log(result)
           lt.dela = result.data.data
         })
     },
     createInterceptor () {
-      const interceptor = axios.interceptors.response.use(
+      axios.interceptors.response.use(
         response => console.log(response),
         error => {
-          if (error.response.status !== 422) {
-            return Promise.reject(error)
+          if (error.response.status !== 401) {
+            return
           }
-
-          /*
-             * When response code is 401, try to refresh the token.
-             * Eject the interceptor so it doesn't loop in case
-             * token refresh causes the 401 response
-             */
-          axios.interceptors.response.eject(interceptor)
-
-          console.log(this.$cookie.get('refreshToken'))
-
-          return axios.post('https://academy2.smw.tom.ru/artem-bereza/api2/user/refreshAccessToken', { headers: { Authorization: 'Bearer' + this.$cookie.get('refreshToken') } })
+          return axios.post('https://academy2.smw.tom.ru/artem-bereza/api2/user/refreshAccessToken', { refresh_token: this.$cookie.get('refreshToken') }, { headers: { Authorization: 'Bearer ' + this.$cookie.get('refreshToken') } })
             .then(response => {
-              console.log(response)
-              // this.$cookie.set('accessToken', response.data.data.refresh_token)
+              this.$cookie.set('accessToken', response.data.data.access_token)
             }).catch(error => {
               console.log(error)
             })
