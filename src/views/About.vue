@@ -88,7 +88,9 @@ export default {
       const it = this
       await axios.post('https://academy2.smw.tom.ru/artem-bereza/api2/user/login', { email: this.formLog.email, password: this.formLog.password })
         .then((result) => {
+          console.log(result.data.data.refresh_token)
           this.$cookie.set('accessToken', result.data.data.access_token)
+          this.$cookie.set('refreshToken', result.data.data.refresh_token)
         })
         .catch(function (error) {
           if (error.response.data.email[0]) {
@@ -106,7 +108,7 @@ export default {
       const it = this
       axios.post('https://academy2.smw.tom.ru/artem-bereza/api2/user/register', { name: this.formReg.name, email: this.formReg.email, password: this.formReg.password })
         .then((result) => {
-          // this.$cookie.set('accessToken', result.data.data.access_token)
+          this.$cookie.set('accessToken', result.data.data.access_token)
           console.log(result)
         })
         .catch(function (error) {

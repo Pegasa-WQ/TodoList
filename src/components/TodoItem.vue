@@ -1,22 +1,32 @@
 <template>
   <div class="todo-item">
   <div class="todo-item__content">
-      <input class="check" type="checkbox" v-model="todo.completed" />
+      <input class="check" type="checkbox" v-model="todo.is_completed" @change="putCheck" />
     <h2 class="title">
       {{ todo.name }}
     </h2>
   </div>
   <div class="todo-item__date-remove">
-      <span class="time"> {{ todo.date }} </span>
+      <span class="time"> {{ todo.created_at }} </span>
     <button class="remove-item" @click="$emit('remove-todo')"></button>
   </div>
   </div>
 </template>
 <script>
+import axios from 'axios'
 export default {
   name: 'TodoItem',
   props: ['todo'],
   methods: {
+    putCheck () {
+      axios.put(`https://academy2.smw.tom.ru/artem-bereza/api2/task/update/${this.todo.id}`, { attributes: { name: this.todo.name, is_completed: this.todo.is_completed } }, { headers: { Authorization: 'Bearer' + this.$cookie.get('accessToken') } })
+        .then((result) => {
+          console.log(result)
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    }
   }
 }
 </script>

@@ -1,6 +1,6 @@
 <template>
   <div class="list-item" :class="{full: findAll(item), ready: getComp(item)}">
-      <h2 class="title-lists" @click="$emit('send', item.task, item.title); $emit('getId')">
+      <h2 class="title-lists" @click="$emit('send', item.task, item.title, item.id); $emit('getId')">
       {{ item.name }}
     </h2>
     <button class="remove-item" @click="$emit('remove-todo')"></button>
@@ -26,7 +26,7 @@ export default {
     }
   },
   created: function () {
-    this.$emit('send', this.item.task, this.item.title)
+    this.$emit('send', this.item.task, this.item.title, this.item.id)
     this.$emit('getId')
   }
 }

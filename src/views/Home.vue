@@ -1,7 +1,7 @@
 <template>
   <div class="container" id="app">
   <TodosLists v-on:send="sendArray" v-on:remove="sendArray"/>
-  <TodoList v-bind:todos="todos" v-bind:title="title"  v-on:remove-todo='removeTodo (index)'/>
+  <TodoList v-bind:todos="todos" v-bind:title="title" v-bind:id="idList"  v-on:remove-todo='removeTodo (index)'/>
   </div>
 </template>
 
@@ -19,17 +19,19 @@ export default {
     return {
       todos: 0,
       title: '',
+      idList: '',
       completed: 0
     }
   },
   methods: {
-    sendArray (todos, title) {
+    sendArray (todos, title, id) {
       if (todos === 0) {
         this.todos = 0
         this.title = ''
       } else {
         this.todos = todos
         this.title = title
+        this.idList = id
       }
     }
   }

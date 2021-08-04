@@ -4,8 +4,8 @@
 <div class="todos_container">
 <h2 class="title-list"> {{ title }} </h2>
 <div v-for="(todo, index) in todos" :key="todo.id">
-    <deleteTodoModal v-if="PopupVisible" v-on:closePopup="closePopup" v-on:deleteTodo="removeTodo(index)" v-bind:todo="todo"/>
-    <TodoItem v-bind:todo="todo" v-on:remove-todo="openModalDelete" :class="{urgent: todo.checked, completed: todo.completed}"/>
+    <deleteTodoModal v-if="PopupVisible" v-on:closePopup="closePopup" v-on:deleteTodo="removeTodo(index, todo)" v-bind:todo="todo"/>
+    <TodoItem v-bind:todo="todo" v-on:remove-todo="openModalDelete" :class="{urgent: todo.urgency, completed: todo.is_completed}"/>
 </div>
 </div>
   <div class="add">
@@ -22,6 +22,7 @@
 import TodoItem from './TodoItem.vue'
 import deleteTodoModal from './deleteTodoModal.vue'
 import addTodoModal from './addTodoModal.vue'
+import axios from 'axios'
 export default {
   name: 'Todolist',
   components: {
@@ -29,7 +30,7 @@ export default {
     deleteTodoModal,
     addTodoModal
   },
-  props: ['todos', 'title'],
+  props: ['todos', 'title', 'id'],
   data () {
     return {
       newTodo: '',
@@ -48,18 +49,30 @@ export default {
       if (this.newTodo.trim().length === 0) {
         return
       }
+      const it = this
+      axios.post('https://academy2.smw.tom.ru/artem-bereza/api2/task/create', { attributes: { name: this.newTodo, list_id: this.id, urgency: this.check, description: '' } }, { headers: { Authorization: 'Bearer' + this.$cookie.get('accessToken') } })
+        .then((result) => {
+          it.idForTodo = result.data.data.attributes.id
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
       this.todos.push({
-        id: this.idForTodo,
-        title: this.newTodo,
-        completed: false,
-        checked: this.check,
-        date: new Date().toLocaleString()
+        id: it.idForTodo,
+        name: this.newTodo,
+        is_completed: false,
+        urgency: this.check,
+        created_at: new Date().toLocaleString()
       })
 
       this.idForTodo++
       this.check = false
     },
-    removeTodo (index) {
+    removeTodo (index, todo) {
+      axios.delete(`https://academy2.smw.tom.ru/artem-bereza/api2/task/delete/${todo.id}`, { headers: { Authorization: 'Bearer' + this.$cookie.get('accessToken') } })
+        .then((result) => {
+          console.log(result)
+        })
       this.todos.splice(index, 1)
       this.PopupVisible = false
     },

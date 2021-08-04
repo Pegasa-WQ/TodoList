@@ -3,7 +3,7 @@
   <div class="container-lists">
   <TodoSelect v-bind:options="options" @select="sortByCategories"/>
   <div v-for="(item, index) in dela" :key="index">
-      <TodosListsItem v-bind:item="item" v-on:send="$emit('send', item.task, item.name)" v-on:getId="getId(index)" v-on:remove-todo='removeList(index, item)' :class="{active: activeId === index}"/>
+      <TodosListsItem v-bind:item="item" v-on:send="$emit('send', item.task, item.name, item.id)" v-on:getId="getId(index)" v-on:remove-todo='removeList(index, item)' :class="{active: activeId === index}"/>
   </div>
   </div>
   <div class="add">
@@ -29,12 +29,16 @@ export default {
       activeId: '',
       idForList: 0,
       dela: [],
+      token: {
+        Authorization: 'Bearer' + this.$cookie.get('accessToken')
+      },
       options: [
         { name: 'Все', value: 1 },
         { name: 'Исполненные', value: 2 },
         { name: 'Неисполненные', value: 3 }
       ],
-      array: 0
+      array: 0,
+      idList: ''
     }
   },
   methods: {
@@ -45,16 +49,25 @@ export default {
       if (this.newList.trim().length === 0) {
         return
       }
+      this.createInterceptor()
+      const it = this
+      axios.post('https://academy2.smw.tom.ru/artem-bereza/api2/list/create', { attributes2: { name: this.newList } }, { headers: { Authorization: 'Bearer' + this.$cookie.get('accessToken') } })
+        .then((result) => {
+          it.idList = result.data.data.attributes.id
+          console.log(it.idList)
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
       this.dela.push({
-        id: this.idForList,
+        id: it.idList,
         name: this.newList,
         task: []
       })
-
       this.sortAbc()
       this.idForList++
       this.newList = ''
-      this.sortByCategories()
+      // this.sortByCategories()
       document.querySelector('.select').value = 'Все'
     },
     getIdActive (index) {
@@ -66,20 +79,19 @@ export default {
       }
     },
     removeList (index, item) {
+      axios.delete(`https://academy2.smw.tom.ru/artem-bereza/api2/list/delete/${item.id}`, { headers: { Authorization: 'Bearer' + this.$cookie.get('accessToken') } })
+        .then((result) => {
+          console.log(result)
+        })
       if (this.dela.length === 1) {
         this.$emit('remove', 0, '')
         this.dela.splice(index, 1)
         this.getIdActive(index)
       } else {
         this.getIdActive(index)
-        this.dela.splice(item.id, 1)
+        this.dela.splice(index, 1)
         this.$emit('remove', this.dela[this.activeId].task, this.dela[this.activeId].name)
       }
-      axios.delete(`https://academy2.smw.tom.ru/artem-bereza/api2/list/delete/${item.id}`, { headers: { Authorization: 'Bearer' + this.$cookie.get('accessToken') } })
-        .then((result) => {
-          console.log(result)
-        })
-      this.getJson()
     },
     sortByCategories (option) {
       this.array = 0
@@ -87,7 +99,6 @@ export default {
         this.array = this.dela.filter(function (item) {
           return item.gray
         })
-        console.log(this.array)
       }
       if (option === 'Неисполненные') {
         this.array = this.dela.filter(function (item) {
@@ -113,11 +124,37 @@ export default {
     },
     async getJson () {
       const lt = this
-      axios.get('https://academy2.smw.tom.ru/artem-bereza/api2/user/get-lists', { headers: { Authorization: 'Bearer' + this.$cookie.get('accessToken') } })
+      await axios.get('https://academy2.smw.tom.ru/artem-bereza/api2/user/get-lists', { headers: { Authorization: 'Bearer' + this.$cookie.get('accessToken') } })
         .then((result) => {
-          console.log(result.data.data)
           lt.dela = result.data.data
         })
+    },
+    createInterceptor () {
+      const interceptor = axios.interceptors.response.use(
+        response => console.log(response),
+        error => {
+          if (error.response.status !== 422) {
+            return Promise.reject(error)
+          }
+
+          /*
+             * When response code is 401, try to refresh the token.
+             * Eject the interceptor so it doesn't loop in case
+             * token refresh causes the 401 response
+             */
+          axios.interceptors.response.eject(interceptor)
+
+          console.log(this.$cookie.get('refreshToken'))
+
+          return axios.post('https://academy2.smw.tom.ru/artem-bereza/api2/user/refreshAccessToken', { headers: { Authorization: 'Bearer' + this.$cookie.get('refreshToken') } })
+            .then(response => {
+              console.log(response)
+              // this.$cookie.set('accessToken', response.data.data.refresh_token)
+            }).catch(error => {
+              console.log(error)
+            })
+        }
+      )
     }
   },
   computed: {
