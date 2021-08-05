@@ -22,13 +22,15 @@ axios.interceptors.response.use(
   response => {
     return response
   }, error => {
+    const originalRequest = error.config
     if (error.response.status === 401) {
-      return axios.post('https://academy2.smw.tom.ru/artem-bereza/api2/user/refreshAccessToken', { refresh_token: VueCookie.get('refreshToken') }, { headers: { Authorization: 'Bearer ' + VueCookie.get('refreshToken') } })
+      axios.post('https://academy2.smw.tom.ru/artem-bereza/api2/user/refreshAccessToken', { refresh_token: VueCookie.get('refreshToken') }, { headers: { Authorization: 'Bearer ' + VueCookie.get('refreshToken') } })
         .then(response => {
           VueCookie.set('accessToken', response.data.data.access_token)
         }).catch(error => {
           console.log(error)
         })
+      return axios(originalRequest)
     }
   }
 )
