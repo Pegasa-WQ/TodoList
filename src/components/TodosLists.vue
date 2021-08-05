@@ -122,7 +122,6 @@ export default {
       const lt = this
       await axios.get('https://academy2.smw.tom.ru/artem-bereza/api2/user/get-lists', { headers: { Authorization: 'Bearer' + this.$cookie.get('accessToken') } })
         .then((result) => {
-          console.log(result)
           lt.dela = result.data.data
         })
     }
