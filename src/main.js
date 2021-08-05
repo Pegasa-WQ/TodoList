@@ -22,14 +22,13 @@ axios.interceptors.response.use(
   response => {
     return response
   }, error => {
-    if (error.response.status !== 401) {
-      return
+    if (error.response.status === 401) {
+      return axios.post('https://academy2.smw.tom.ru/artem-bereza/api2/user/refreshAccessToken', { refresh_token: VueCookie.get('refreshToken') }, { headers: { Authorization: 'Bearer ' + VueCookie.get('refreshToken') } })
+        .then(response => {
+          VueCookie.set('accessToken', response.data.data.access_token)
+        }).catch(error => {
+          console.log(error)
+        })
     }
-    return axios.post('https://academy2.smw.tom.ru/artem-bereza/api2/user/refreshAccessToken', { refresh_token: VueCookie.get('refreshToken') }, { headers: { Authorization: 'Bearer ' + VueCookie.get('refreshToken') } })
-      .then(response => {
-        VueCookie.set('accessToken', response.data.data.access_token)
-      }).catch(error => {
-        console.log(error)
-      })
   }
 )
