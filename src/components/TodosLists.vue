@@ -46,7 +46,6 @@ export default {
       this.activeId = index
     },
     addList () {
-      this.createInterceptor()
       if (this.newList.trim().length === 0) {
         return
       }
@@ -76,7 +75,6 @@ export default {
       }
     },
     removeList (index, item) {
-      this.createInterceptor()
       axios.delete(`https://academy2.smw.tom.ru/artem-bereza/api2/list/delete/${item.id}`, { headers: { Authorization: 'Bearer' + this.$cookie.get('accessToken') } })
         .then((result) => {
           console.log(result)
@@ -127,22 +125,6 @@ export default {
           console.log(result)
           lt.dela = result.data.data
         })
-    },
-    createInterceptor () {
-      axios.interceptors.response.use(
-        response => console.log(response),
-        error => {
-          if (error.response.status !== 401) {
-            return
-          }
-          return axios.post('https://academy2.smw.tom.ru/artem-bereza/api2/user/refreshAccessToken', { refresh_token: this.$cookie.get('refreshToken') }, { headers: { Authorization: 'Bearer ' + this.$cookie.get('refreshToken') } })
-            .then(response => {
-              this.$cookie.set('accessToken', response.data.data.access_token)
-            }).catch(error => {
-              console.log(error)
-            })
-        }
-      )
     }
   },
   computed: {
