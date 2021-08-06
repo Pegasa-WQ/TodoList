@@ -49,19 +49,17 @@ export default {
       if (this.newList.trim().length === 0) {
         return
       }
-      const it = this
-      axios.post('https://academy2.smw.tom.ru/artem-bereza/api2/list/create', { attributes: { name: this.newList } }, { headers: { Authorization: 'Bearer' + this.$cookie.get('accessToken') } })
+      const newName = this.newList
+      // const it = this
+      axios.post('https://academy2.smw.tom.ru/artem-bereza/api2/list/create', { attributes: { name: newName } }, { headers: { Authorization: 'Bearer' + this.$cookie.get('accessToken') } })
         .then((result) => {
-          it.idList = result.data.data.attributes.id
-          console.log(it.idList)
+          this.dela.push({
+            id: result.data.data.attributes.id,
+            name: newName,
+            task: []
+          })
         })
-      this.dela.push({
-        id: it.idList,
-        name: this.newList,
-        task: []
-      })
       this.sortAbc()
-      this.idForList++
       this.newList = ''
       // this.sortByCategories()
       document.querySelector('.select').value = 'Все'
@@ -75,6 +73,7 @@ export default {
       }
     },
     removeList (index, item) {
+      console.log(item.name)
       axios.delete(`https://academy2.smw.tom.ru/artem-bereza/api2/list/delete/${item.id}`, { headers: { Authorization: 'Bearer' + this.$cookie.get('accessToken') } })
         .then((result) => {
           console.log(result)

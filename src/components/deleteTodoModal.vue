@@ -6,7 +6,7 @@
   <span class="v-popup__delete"  @click="$emit('closePopup')">X</span>
   </div>
   <div class="v-popup__content">
-  {{ `Удалить дело "${this.todo.title}"?` }}
+  {{ `Удалить дело "${this.todo.name}"?` }}
   </div>
   <div class="buttons">
   <button class="button-modal"  @click="$emit('closePopup')">Отмена</button>

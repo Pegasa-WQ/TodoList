@@ -3,9 +3,9 @@
 <addTodoModal v-if="PopupVisibleAdd" v-on:closePopupAdd="closePopupAdd" v-bind:titleTodo="newTodo" v-bind:title="title"/>
 <div class="todos_container">
 <h2 class="title-list"> {{ title }} </h2>
-<div v-for="(todo, index) in todos" :key="todo.id">
-    <deleteTodoModal v-if="PopupVisible" v-on:closePopup="closePopup" v-on:deleteTodo="removeTodo(index, todo)" v-bind:todo="todo"/>
-    <TodoItem v-bind:todo="todo" v-on:remove-todo="openModalDelete" :class="{urgent: todo.urgency, completed: todo.is_completed}"/>
+<deleteTodoModal v-if="PopupVisible" v-on:closePopup="closePopup" v-on:deleteTodo="removeTodo" v-bind:todo="todoDelete"/>
+<div v-for="(todo, index) in todos" :key="index">
+    <TodoItem v-bind:todo="todo" v-on:remove-todo="openModalDelete(index, todo)" :class="{urgent: todo.urgency, completed: todo.is_completed}"/>
 </div>
 </div>
   <div class="add">
@@ -35,10 +35,12 @@ export default {
     return {
       newTodo: '',
       check: false,
-      idForTodo: 0,
       todoItem: '',
       PopupVisible: false,
-      PopupVisibleAdd: false
+      PopupVisibleAdd: false,
+      idForTodo: 0,
+      todoDelete: '',
+      indexTodoDelete: ''
     }
   },
   methods: {
@@ -49,34 +51,34 @@ export default {
       if (this.newTodo.trim().length === 0) {
         return
       }
-      const it = this
+      const check = this.check
       axios.post('https://academy2.smw.tom.ru/artem-bereza/api2/task/create', { attributes: { name: this.newTodo, list_id: this.id, urgency: this.check, description: '' } }, { headers: { Authorization: 'Bearer' + this.$cookie.get('accessToken') } })
-        .then((result) => {
-          it.idForTodo = result.data.data.attributes.id
+        .then((response) => {
+          this.todos.push({
+            id: response.data.data.attributes.id,
+            name: this.newTodo,
+            is_completed: false,
+            urgency: check,
+            created_at: new Date().toLocaleString()
+          })
         })
         .catch(function (error) {
           console.log(error)
         })
-      this.todos.push({
-        id: it.idForTodo,
-        name: this.newTodo,
-        is_completed: false,
-        urgency: this.check,
-        created_at: new Date().toLocaleString()
-      })
-
-      this.idForTodo++
+      console.log(this.todos)
       this.check = false
     },
-    removeTodo (index, todo) {
-      axios.delete(`https://academy2.smw.tom.ru/artem-bereza/api2/task/delete/${todo.id}`, { headers: { Authorization: 'Bearer' + this.$cookie.get('accessToken') } })
-        .then((result) => {
-          console.log(result)
+    removeTodo () {
+      this.todos.splice(this.indexTodoDelete, 1)
+      axios.delete(`https://academy2.smw.tom.ru/artem-bereza/api2/task/delete/${this.todoDelete.id}`, { headers: { Authorization: 'Bearer' + this.$cookie.get('accessToken') } })
+        .then((response) => {
+          return response
         })
-      this.todos.splice(index, 1)
       this.PopupVisible = false
     },
-    openModalDelete () {
+    openModalDelete (index, todo) {
+      this.todoDelete = todo
+      this.indexTodoDelete = index
       this.PopupVisible = true
     },
     closePopup () {
