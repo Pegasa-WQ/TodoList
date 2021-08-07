@@ -18,7 +18,7 @@ const routes = [
     component: Home,
     // meta: { requiresAuth: true }
     beforeEnter: (to, from, next) => {
-      if (VueCookies.get('accessToken')) {
+      if (VueCookies.get('refreshToken')) {
         next()
       } else {
         next(false)

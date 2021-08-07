@@ -1,5 +1,17 @@
 <template>
 <div class="container__login">
+<div v-if="visibleModal" class="popup-wrapper" ref="popup_wrapper">
+  <div class="v-popup">
+  <div class="v-popup__header">
+  <span class="v-text">Вы зарегистированы!</span>
+  <span class="v-popup__delete" @click="closeModal ">X</span>
+  </div>
+  <div class="v-popup__content">
+  Пожалуйста, авторизируйтесь!
+  </div>
+  <button class="button-modal" v-focus @click="closeModal">OK</button>
+  </div>
+</div>
 <div v-if="visible === 1" class="login">
 <form @submit.prevent="signIn" class="form">
 <div class="form-group">
@@ -50,6 +62,7 @@ export default {
     return {
       mode: 'signIn',
       visibleLogin: true,
+      visibleModal: false,
       visible: 1,
       errorEmail: '',
       errorPassword: '',
@@ -80,13 +93,14 @@ export default {
     },
     openLogin () {
       this.visible--
+      this.visibleButton = true
     },
     getRoud () {
       this.$router.push({ name: 'Home' })
     },
     async signIn () {
       const it = this
-      await axios.post('https://academy2.smw.tom.ru/artem-bereza/api2/user/login', { email: this.formLog.email, password: this.formLog.password })
+      await axios.post('https://academy2.smw.tom.ru/artem-bereza/api2/user/login', { email: it.formLog.email, password: it.formLog.password })
         .then((result) => {
           console.log(result.data.data.refresh_token)
           this.$cookie.set('accessToken', result.data.data.access_token)
@@ -106,14 +120,14 @@ export default {
     },
     async signUp () {
       const it = this
-      axios.post('https://academy2.smw.tom.ru/artem-bereza/api2/user/register', { name: this.formReg.name, email: this.formReg.email, password: this.formReg.password })
-        .then((result) => {
-          this.$cookie.set('accessToken', result.data.data.access_token)
-          this.$cookie.set('refreshToken', result.data.data.refresh_token)
-          console.log(result)
+      axios.post('https://academy2.smw.tom.ru/artem-bereza/api2/user/register', { name: it.formReg.name, email: it.formReg.email, password: it.formReg.password })
+        .then((response) => {
+          this.$cookie.set('accessToken', response.data.data.access_token)
+          it.visibleModal = true
+          return response
         })
         .catch(function (error) {
-          console.log(error.response.data)
+          console.log(error.response)
           if (error.response.data.email[0]) {
             it.errorRegEmail = error.response.data.email[0]
             it.errorRegPassword = error.response.data.password[0]
@@ -122,6 +136,10 @@ export default {
         })
 
       setTimeout(() => this.getRoud(), 1000)
+    },
+    closeModal () {
+      this.visibleModal = false
+      this.openLogin()
     }
   },
   mounted () {
