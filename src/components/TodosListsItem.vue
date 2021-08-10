@@ -21,7 +21,7 @@ export default {
       return item.green
     },
     findAll (item) {
-      item.gray = item.task.length === item.task.filter(i => i.completed).length && item.task.length > 0
+      item.gray = item.task.length === item.task.filter(i => i.is_completed).length && item.task.length > 0
       return item.gray
     }
   },

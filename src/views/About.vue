@@ -1,19 +1,7 @@
 <template>
 <div class="container__login">
-<div v-if="visibleModal" class="popup-wrapper" ref="popup_wrapper">
-  <div class="v-popup">
-  <div class="v-popup__header">
-  <span class="v-text">Вы зарегистированы!</span>
-  <span class="v-popup__delete" @click="closeModal ">X</span>
-  </div>
-  <div class="v-popup__content">
-  Пожалуйста, авторизируйтесь!
-  </div>
-  <button class="button-modal" v-focus @click="closeModal">OK</button>
-  </div>
-</div>
 <div v-if="visible === 1" class="login">
-<form @submit.prevent="signIn" class="form">
+<form @submit.prevent="signIn(formLog.email, formLog.password)" class="form">
 <div class="form-group">
 <label class="label" for="email">Ваш E-mail</label>
 <input class="input" type="text" id="email" v-model="formLog.email">
@@ -98,11 +86,11 @@ export default {
     getRoud () {
       this.$router.push({ name: 'Home' })
     },
-    async signIn () {
+    async signIn (email, password) {
       const it = this
-      await axios.post('https://academy2.smw.tom.ru/artem-bereza/api2/user/login', { email: it.formLog.email, password: it.formLog.password })
+      await axios.post('https://academy2.smw.tom.ru/artem-bereza/api2/user/login', { email: email, password: password })
         .then((result) => {
-          console.log(result.data.data.refresh_token)
+          console.log(result)
           this.$cookie.set('accessToken', result.data.data.access_token)
           this.$cookie.set('refreshToken', result.data.data.refresh_token)
         })
@@ -122,8 +110,7 @@ export default {
       const it = this
       axios.post('https://academy2.smw.tom.ru/artem-bereza/api2/user/register', { name: it.formReg.name, email: it.formReg.email, password: it.formReg.password })
         .then((response) => {
-          this.$cookie.set('accessToken', response.data.data.access_token)
-          it.visibleModal = true
+          it.signIn(it.formReg.email, it.formReg.password)
           return response
         })
         .catch(function (error) {
@@ -134,8 +121,6 @@ export default {
             it.errorRegName = error.response.data.name[0]
           }
         })
-
-      setTimeout(() => this.getRoud(), 1000)
     },
     closeModal () {
       this.visibleModal = false

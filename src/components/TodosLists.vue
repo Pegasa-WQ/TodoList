@@ -2,7 +2,7 @@
 <div class="todos-lists">
   <div class="container-lists">
   <TodoSelect v-bind:options="options" @select="sortByCategories"/>
-  <div v-for="(item, index) in dela" :key="index">
+  <div v-for="(item, index) in filteredTodos" :key="index">
       <TodosListsItem v-bind:item="item" v-on:send="$emit('send', item.task, item.name, item.id)" v-on:getId="getId(index)" v-on:remove-todo='removeList(index, item)' :class="{active: activeId === index}"/>
   </div>
   </div>
@@ -50,18 +50,19 @@ export default {
         return
       }
       const newName = this.newList
-      // const it = this
-      axios.post('https://academy2.smw.tom.ru/artem-bereza/api2/list/create', { attributes: { name: newName } }, { headers: { Authorization: 'Bearer' + this.$cookie.get('accessToken') } })
+      axios.post('https://academy2.smw.tom.ru/artem-bereza/api2/list/create', { attributes: { name: this.newList } }, { headers: { Authorization: 'Bearer' + this.$cookie.get('accessToken') } })
         .then((result) => {
-          this.dela.push({
-            id: result.data.data.attributes.id,
-            name: newName,
-            task: []
-          })
+          const id = result.data.data.attributes.id
+          return id
         })
+      this.dela.push({
+        id: this.id,
+        name: newName,
+        task: []
+      })
       this.sortAbc()
       this.newList = ''
-      // this.sortByCategories()
+      this.sortByCategories()
       document.querySelector('.select').value = 'Все'
     },
     getIdActive (index) {
@@ -73,7 +74,6 @@ export default {
       }
     },
     removeList (index, item) {
-      console.log(item.name)
       axios.delete(`https://academy2.smw.tom.ru/artem-bereza/api2/list/delete/${item.id}`, { headers: { Authorization: 'Bearer' + this.$cookie.get('accessToken') } })
         .then((result) => {
           console.log(result)
@@ -105,6 +105,7 @@ export default {
       return this.dela
     },
     sortAbc () {
+      console.log(this.dela)
       this.dela = this.dela.sort(function (a, b) {
         const nameA = a.name.toLowerCase()
         const nameB = b.name.toLowerCase()
@@ -122,6 +123,7 @@ export default {
       await axios.get('https://academy2.smw.tom.ru/artem-bereza/api2/user/get-lists', { headers: { Authorization: 'Bearer' + this.$cookie.get('accessToken') } })
         .then((result) => {
           lt.dela = result.data.data
+          this.sortAbc()
         })
     }
   },
@@ -136,7 +138,6 @@ export default {
   },
   created: function () {
     this.getJson()
-    this.sortAbc()
   }
 }
 </script>

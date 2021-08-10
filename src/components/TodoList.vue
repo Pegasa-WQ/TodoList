@@ -54,18 +54,19 @@ export default {
       const check = this.check
       axios.post('https://academy2.smw.tom.ru/artem-bereza/api2/task/create', { attributes: { name: this.newTodo, list_id: this.id, urgency: this.check, description: '' } }, { headers: { Authorization: 'Bearer' + this.$cookie.get('accessToken') } })
         .then((response) => {
-          this.todos.push({
-            id: response.data.data.attributes.id,
-            name: this.newTodo,
-            is_completed: false,
-            urgency: check,
-            created_at: new Date().toLocaleString()
-          })
+          const id = response.data.data.attributes.id
+          return id
         })
         .catch(function (error) {
           console.log(error)
         })
-      console.log(this.todos)
+      this.todos.push({
+        id: this.id,
+        name: this.newTodo,
+        is_completed: false,
+        urgency: check,
+        created_at: new Date().toLocaleString()
+      })
       this.check = false
     },
     removeTodo () {
